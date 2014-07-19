@@ -1,13 +1,18 @@
 //  Documentacion arduino sensor de fuerza.
-//  Tomado de http://www.bit-101.com/blog/?p=3831
+//  Tomado de http://garagelab.com/profiles/blogs/tutorial-force-sensitive-resistor-and-arduino
 
-void setup() {
-    pinMode(7, OUTPUT);
+int Senval=0;
+int Senpin=A0;
+
+void setup()
+{
+    Serial.begin(9600);
 }
- 
-void loop() {
-    digitalWrite(7, HIGH);
-    delay(1000);
-    digitalWrite(7, LOW);
-    delay(1000);
+
+void loop()
+{
+
+    Senval=analogRead(Senpin);
+    Serial.println(Senval);
+    delay(200);
 }
