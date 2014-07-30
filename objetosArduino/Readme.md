@@ -7,7 +7,7 @@
 Herramientas:
 
 -> 2 caimanes.
--> resistencia 2 o 3 ohm.
+-> resistencia 2 o 3 megas.
 -> arduino
 -> vaso con agua o fruta.
 
