@@ -1,4 +1,4 @@
-===== handshaking - pregunta y respuesta en Serial arduino y processing =====
+handshaking - pregunta y respuesta en Serial arduino y processing
 
 Crear un sistema con las siguientes caracteristicas:
 
@@ -8,7 +8,7 @@ Puede ser cualuier circuito, lo importante es usar dos entradas analogicas y una
 
 Luego usar este codigo en tu Arduino:
 
-´´´
+<pre><code>
 
 //  pines analogos establecidos
 int firstSensor = 0;    // 1 sensor analogo
@@ -22,12 +22,13 @@ void setup()
 {
   // Empezamos con el serial fijandolo a una velocidad de 9600  bps(baudios por segundos):
   Serial.begin(9600);
-  while (!Serial) {
+  while (!Serial) 
+  {
     ; // Necesitamos un puerto serial establecido. Modificar solamente para placas Leonardo
   }
 
   pinMode(2, INPUT);   // El sensor digital es establecido como Input por en la placa
-  establishContact();  // Función que envia un byte (caracter) para establecer contacto hasta que el receptor responda(processing)
+  establishContact();  // Función que envia un byte (caracter) para establecer contacto hasta que el receptor                              // responda(processing)
 }
 
 void loop()
@@ -36,7 +37,6 @@ void loop()
   if (Serial.available() > 0) {
     // Tomamos el byte escuchado:
     inByte = Serial.read();
-
     // Procesamiento pines analogos
     // Leemos esa primera entrada analogica,y la dividimos por 4 para obtener un valor de 0-255:
     firstSensor = analogRead(A0)/4;
@@ -44,7 +44,6 @@ void loop()
     delay(10);
     // Leemos la segunda entrada analogica,y la dividimos por 4 para obtener un valor de 0-255:
     secondSensor = analogRead(1)/4;
-
     // para leer el suiche,mapeamos de 0 a 255L
     thirdSensor = map(digitalRead(2), 0, 1, 0, 255);  
     // mandamos los valores de los sensores:
@@ -56,61 +55,15 @@ void loop()
 
 void establishContact() {
   while (Serial.available() <= 0) {
-    Serial.print('A');   // send a capital A
+    Serial.print('A');   // mandamos una Mayuscula A
     delay(300);
   }
 }
-´´´
+</pre></code>
 
 Despues de insertar o 'ingresar' el codigo en el arduino, abrimos processing e insertamos y ejecutamos el siguiente codigo:
 
-´´´
-//  Para utilizar este codigo
-
-int firstSensor = 0;    // first analog sensor
-int secondSensor = 0;   // second analog sensor
-int thirdSensor = 0;    // digital sensor
-int inByte = 0;         // incoming serial byte
-
-void setup()
-{
-  // start serial port at 9600 bps:
-  Serial.begin(9600);
-  while (!Serial) {
-    ; // wait for serial port to connect. Needed for Leonardo only
-  }
-
-  pinMode(2, INPUT);   // digital sensor is on digital pin 2
-  establishContact();  // send a byte to establish contact until receiver responds 
-}
-
-void loop()
-{
-  // if we get a valid byte, read analog ins:
-  if (Serial.available() > 0) {
-    // get incoming byte:
-    inByte = Serial.read();
-    // read first analog input, divide by 4 to make the range 0-255:
-    firstSensor = analogRead(A0)/4;
-    // delay 10ms to let the ADC recover:
-    delay(10);
-    // read second analog input, divide by 4 to make the range 0-255:
-    secondSensor = analogRead(1)/4;
-    // read  switch, map it to 0 or 255L
-    thirdSensor = map(digitalRead(2), 0, 1, 0, 255);  
-    // send sensor values:
-    Serial.write(firstSensor);
-    Serial.write(secondSensor);
-    Serial.write(thirdSensor);               
-  }
-}
-
-void establishContact() {
-  while (Serial.available() <= 0) {
-    Serial.print('A');   // send a capital A
-    delay(300);
-  }
-}
+<pre><code>
 
 import processing.serial.*;
 
@@ -167,16 +120,14 @@ void serialEvent(Serial myPort) {
     //Añadimos el ultimo byte del puerto serial al array
     serialInArray[serialCount] = inByte;
     serialCount++;
-
     // si tenemos 3 bytes:
-    if (serialCount > 2 ) {
-      xpos = serialInArray[0];    //  Leemos los datos que se envian desde el serial y los asignamos a la posX del circulo
-      ypos = serialInArray[1];    //  Leemos los datos que se envian desde el serial y los asignamos a la posY del circulo
-      fgcolor = serialInArray[2]; //  Cabiamos el color de la forma cuando presionamos un boton    
-
+    if (serialCount > 2 )
+    {
+      xpos = serialInArray[0];//Leemos los datos que se envian desde el serial y los asignamos a la posX del circulo
+      ypos = serialInArray[1];//Leemos los datos que se envian desde el serial y los asignamos a la posY del circulo
+      fgcolor = serialInArray[2];//Cabiamos el color de la forma cuando presionamos un boton    
       // Imprimimos los valores (para propositos de debugeo solamente):
       println(xpos + "\t" + ypos + "\t" + fgcolor);
-
       // Enviamos una A mayuscula para que le preguntemos al serial si hay nuevas lecturas de los sensores:
       myPort.write('A');
       // Reset serialCount:
@@ -184,5 +135,6 @@ void serialEvent(Serial myPort) {
     }
   }
 }
+</pre></code>
 
 
